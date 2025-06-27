@@ -63,11 +63,11 @@ usage() {
   echo "Example using GNU xorriso-1.5.6 instead of /usr/bin/xorriso:" >&2
   echo "  export XORRISO="'"$HOME"'"/xorriso-1.5.6/xorriso/xorriso" >&2
   echo "  $(basename "$0") merged.iso merge_mount/iso "'\' >&2
-  echo "                    debian-12.5.0-amd64-DVD-[12345].iso" >&2
+  echo "                    debian-testing-amd64-DVD-[12345].iso" >&2
   echo >&2
   echo "Example writing to optical drive /dev/sr0 :" >&2
   echo "  $(basename "$0") mmc:/dev/sr0 merge_mount/iso "'\' >&2
-  echo "                    debian-12.5.0-amd64-DVD-[12345].iso" >&2
+  echo "                    debian-testing-amd64-DVD-[12345].iso" >&2
   echo >&2
   echo \
   "Example on Linux writing to USB stick with xorriso-dd-target-plug-test:" >&2
@@ -75,7 +75,7 @@ usage() {
   echo "  chmod u+x xorriso-dd-target" >&2
   echo '  export XORRISO_DD_TARGET_PATH="$(pwd)"' >&2
   echo "  $(basename "$0") xorriso-dd-target-plug-test merge_mount/iso "'\' >&2
-  echo "                    debian-12.5.0-amd64-DVD-[12345].iso" >&2
+  echo "                    debian-testing-amd64-DVD-[12345].iso" >&2
   echo "This leads to the first two steps of the xorriso-dd-target device" >&2
   echo "plug dialog. See: https://wiki.debian.org/XorrisoDdTarget" >&2
   echo 'Finally input "yes" is required to authorize xorriso under sudo.' >&2
