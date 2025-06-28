@@ -37,10 +37,10 @@ fi
 
 # Téléchargement des ISO
 echo -e "${yellow}DEUXIEME ETAPE : TELECHARGEMENT DES DVD${defaut}"
-mkdir Debian-merge && cd Debian-merge
+#mkdir Debian-merge && cd Debian-merge
 # Téléchargement des fichiers .jigdo et récupération des ISOs
 for i in {1..27}; do 
-    wget "https://cdimage.debian.org/cdimage/weekly-builds/amd64/jigdo-dvd/debian-testing-amd64-DVD-${i}.jigdo" 
+    wget "https://cdimage.debian.org/cdimage/weekly-builds/amd64/jigdo-dvd/debian-testing-amd64-DVD-${i}.jigdo" && wget "https://cdimage.debian.org/cdimage/weekly-builds/amd64/jigdo-dvd/debian-testing-amd64-DVD-${i}.template"
 done
 
 find ./ -type f -name "*.jigdo" | while read -r file; do
@@ -53,10 +53,20 @@ echo -e "${blue}ISO installés. ${defaut}"
 read -rp "Voulez-vous merger tous les ISOs ? (oui/non) : " choix_merge
 
 if [[ $choix_merge =~ ^[Oo][OUI][Oui]?[oui]?$ ]]; then
-    mv ../merge_debian_isos ./
+    #mv ../merge_debian_isos ./
     chmod u+x merge_debian_isos
-    ./merge_debian_isos debian-testing-amd64-DVD-all.iso merge_mount/iso debian-testing-amd64-DVD-*.iso
+    sh merge_debian_isos debian-testing-amd64-DVD-all.iso merge_mount/iso debian-testing-amd64-DVD-*.iso
     echo -e "${green}Merge finalisé${defaut}"
+    rm -rf ./xorriso-1.5.6/
+    echo -e "${blue}Suppression de Xorriso${defaut}"
+    for i in {1..27}; do 
+        rm -f "debian-testing-amd64-DVD-${i}.jigdo" && rm "debian-testing-amd64-DVD-${i}.template"
+    done
 else
     echo -e "${blue}Pas de fusion, tous les ISO ont été téléchargés${defaut}"
+    rm -rf ./xorriso-1.5.6/
+    echo -e "${blue}Suppression de Xorriso${defaut}"
+    for i in {1..27}; do 
+        rm -f "debian-testing-amd64-DVD-${i}.jigdo" && rm "debian-testing-amd64-DVD-${i}.template"
+    done
 fi
