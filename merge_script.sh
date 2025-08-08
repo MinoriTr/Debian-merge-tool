@@ -8,7 +8,6 @@ defaut="\e[0m"
 #################  TELECHARGEMENT DE TOUS LES DVD DEBIAN  #################
 echo -e "${red}!!! ATTENTION, CETTE OPERATION PEUT PRENDRE DU TEMPS !!! ASSUREZ-VOUS D'AVOIR UNE CONNEXION INTERNET STABLE AINSI QUE L'ESPACE NECESSAIRE SUR VOTRE DISQUE (ENVIRON 180Go) !!!${defaut}"
 read -rp "Êtes-vous sûr de vouloir continuer ? (oui/non) : " choix_operation
-
 case $choix_operation in
     oui|Oui|OUI|o|O)
         echo -e "${yellow}LANCEMENT DU SCRIPT${defaut}"
@@ -22,7 +21,7 @@ esac
 apt install -y jigdo-file build-essential grub2 libburn-dev libisofs-dev libisoburn-dev zlib1g-dev xorriso
 
 
-# Compilation de xorriso
+#COMPILATION DE XORRISO
 #echo -e "${yellow}PREMIERE ETAPE : INSTALLATION ET COMPILATION DE XORRISO${defaut}"
 #if find ./ -type d -name "xorriso*" | grep -q ; then
 #    echo "${blue}Xorriso déjà installé et compilé${defaut}"
@@ -35,29 +34,49 @@ apt install -y jigdo-file build-essential grub2 libburn-dev libisofs-dev libisob
 #    cd ..
 #fi
 
-# Téléchargement des ISO
-echo -e "${yellow}DEUXIEME ETAPE : TELECHARGEMENT DES DVD${defaut}"
-mkdir Debian-merge && cd Debian-merge
-# Téléchargement des fichiers .jigdo et récupération des ISOs
-for i in {1..27}; do
-    wget "https://cdimage.debian.org/mirror/cdimage/archive/11.0.0/amd64/jigdo-dvd/debian-11.0.0-amd64-DVD-${i}.jigdo" && wget "https://cdimage.debian.org/mirror/cdimage/archive/11.0.0/amd64/jigdo-dvd/debian-11.0.0-amd64-DVD-${i}.template"
+read -rp "Voulez vous télécharger les ISOs debian (oui/non) : " choix_dl_ISOs
+
+if [[ $choix_dl_ISOs =~ ^[Oo][Uu][Ii]$ ]]; then
+
+    # Téléchargement des jigdo et création des ISOs
+    echo -e "${yellow}DEUXIEME ETAPE : TELECHARGEMENT DES FICHIERS JIGDO ${defaut}"
+    mkdir -p Debian-merge && cd Debian-merge || exit 1
+
+    for i in {1..27}; do
+        wget "https://cdimage.debian.org/mirror/cdimage/archive/11.0.0/amd64/jigdo-dvd/debian-11.0.0-amd64-DVD-${i}.jigdo" \
+         && wget "https://cdimage.debian.org/mirror/cdimage/archive/11.0.0/amd64/jigdo-dvd/debian-11.0.0-amd64-DVD-${i}.template"
+    done
+
+    echo -e "${yellow}TROISIEME ETAPE : CREATION DES ISOs AVEC JIGDO ${defaut}"
+    find . -type f -name "*.jigdo" | while read -r file; do
+        jigdo-lite --noask "$file"
+    done
+    echo -e "${green}ISOs téléchargés${defaut}"
+
+else
+    exit 1
+fi
+
+
+#Renommage des ISOs
+echo -e "${yellow}Renommage des ISOs a cause de l'alpha-numérique${defaut}"
+for file in debian-testing-amd64-DVD-*.iso; do
+    n=$(echo "$file" | grep -oP '(?<=DVD-)[0-9]+') 
+    mv "$file" $(printf "debian-testing-amd64-DVD-%02d.iso" "$n")
 done
 
-find ./ -type f -name "*.jigdo" | while read -r file; do
-    jigdo-lite --noask "$file"
-done
 
 # Fusion des ISOs
-echo -e "${yellow}TROISIEME ETAPE : FUSION DES DVD${defaut}"
-echo -e "${blue}ISO installés. ${defaut}"
+echo -e "${yellow}QUATRIEME ETAPE : FUSION DES DVD${defaut}"
+echo -e "${blue}ISOs crées. ${defaut}"
 read -rp "Voulez-vous merger tous les ISOs ? (oui/non) : " choix_merge
 
-if [[ $choix_merge =~ ^[Oo][OUI][Oui]?[oui]?$ ]]; then
-    #mv ../merge_debian_isos ./
-    chmod u+x merge_debian_isos
-    #sh merge_debian_isos debian-testing-amd64-DVD-all.iso merge_mount/iso debian-testing-amd64-DVD-*.iso
-    bash debmerge.sh
+if [[ $choix_merge =~ ^[Oo][Uu][Ii]$ ]]; then
+    chmod u+x ../merge_debian_isos
+    sh ../merge_debian_isos debian-testing-amd64-DVD-all.iso merge_mount/iso debian-testing-amd64-DVD-*.iso
+    #chmod u+x ../debmerge.sh
+    #bash ../debmerge.sh
     echo -e "${green}Merge finalisé${defaut}"
 else
-    echo -e "${blue}Pas de fusion, tous les ISO ont été téléchargés${defaut}"
+   echo -e "${blue}Pas de fusion${defaut}"
 fi
