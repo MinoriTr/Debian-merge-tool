@@ -74,6 +74,8 @@ read -rp "Voulez-vous merger tous les ISOs ? (oui/non) : " choix_merge
 if [[ $choix_merge =~ ^[Oo][Uu][Ii]$ ]]; then
     chmod u+x ../merge_debian_isos
     sh ../merge_debian_isos debian-13.0.0-amd64-DVD-all.iso merge_mount/iso debian-13.0.0-amd64-DVD-*.iso
+    sha256sum sha256sum ./debian-13.0.0-amd64-DVD-all.iso
+    echo -e "${green}Checksum crée${defaut}"
     #chmod u+x ../debmerge.sh
     #bash ../debmerge.sh
     echo -e "${green}Merge finalisé${defaut}"
