@@ -43,8 +43,8 @@ if [[ $choix_dl_ISOs =~ ^[Oo][Uu][Ii]$ ]]; then
     mkdir -p Debian-merge && cd Debian-merge || exit 1
 
     for i in {1..27}; do
-        wget "https://cdimage.debian.org/mirror/cdimage/archive/11.0.0/amd64/jigdo-dvd/debian-11.0.0-amd64-DVD-${i}.jigdo" \
-         && wget "https://cdimage.debian.org/mirror/cdimage/archive/11.0.0/amd64/jigdo-dvd/debian-11.0.0-amd64-DVD-${i}.template"
+        wget "https://cdimage.debian.org/debian-cd/current/amd64/jigdo-dvd/debian-13.0.0-amd64-DVD-${i}.jigdo" \
+         && wget "https://cdimage.debian.org/debian-cd/current/amd64/jigdo-dvd/debian-13.0.0-amd64-DVD-${i}.template"
     done
 
     echo -e "${yellow}TROISIEME ETAPE : CREATION DES ISOs AVEC JIGDO ${defaut}"
@@ -60,9 +60,9 @@ fi
 
 #Renommage des ISOs
 echo -e "${yellow}Renommage des ISOs a cause de l'alpha-numérique${defaut}"
-for file in debian-testing-amd64-DVD-*.iso; do
+for file in debian-13.0.0-amd64-DVD-*.iso; do
     n=$(echo "$file" | grep -oP '(?<=DVD-)[0-9]+') 
-    mv "$file" $(printf "debian-testing-amd64-DVD-%02d.iso" "$n")
+    mv "$file" $(printf "debian-13.0.0-amd64-DVD-%02d.iso" "$n")
 done
 
 
@@ -73,7 +73,7 @@ read -rp "Voulez-vous merger tous les ISOs ? (oui/non) : " choix_merge
 
 if [[ $choix_merge =~ ^[Oo][Uu][Ii]$ ]]; then
     chmod u+x ../merge_debian_isos
-    sh ../merge_debian_isos debian-testing-amd64-DVD-all.iso merge_mount/iso debian-testing-amd64-DVD-*.iso
+    sh ../merge_debian_isos debian-13.0.0-amd64-DVD-all.iso merge_mount/iso debian-13.0.0-amd64-DVD-*.iso
     #chmod u+x ../debmerge.sh
     #bash ../debmerge.sh
     echo -e "${green}Merge finalisé${defaut}"
