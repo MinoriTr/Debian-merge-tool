@@ -9,7 +9,7 @@ Utilisation :
 * Donner les droits d’exécution :
 chmod +x ./merge_script.sh
 
-* Puis le lancer
+* Puis le lancer :
 ./merge_script.sh
 
 Remarques : 
